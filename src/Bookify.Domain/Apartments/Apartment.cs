@@ -19,6 +19,7 @@ public sealed class Apartment : Entity
         LastBookedOnUtc = lastBookedOnUtc;
     }
 
+    // Rich domain model, because string gives no meaning to the value, and it can be any string
     public Name Name { get; private set; }
     public Description Description { get; private set; }
     public Address Address { get; private set; }
