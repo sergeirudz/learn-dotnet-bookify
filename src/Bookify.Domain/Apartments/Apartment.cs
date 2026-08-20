@@ -26,6 +26,8 @@ public sealed class Apartment : Entity
     public Address Address { get; private set; }
     public Money Price { get; set; }
     public Money CleaningFee { get; set; }
-    public DateTime? LastBookedOnUtc { get; private set; }
+
+    // Internal will allow to set it only in Domain project
+    public DateTime? LastBookedOnUtc { get; internal set; }
     public List<Amenity> Amenities { get; private set; } = new();
 }
