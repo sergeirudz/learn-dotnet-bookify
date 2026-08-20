@@ -1,3 +1,7 @@
 .github/instructions/*
 NOTES.md
+DOCS.md
 .idea/**
+
+*/**/obj
+*/**/bin
