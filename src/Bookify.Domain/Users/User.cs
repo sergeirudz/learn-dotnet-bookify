@@ -3,7 +3,7 @@ using Bookify.Domain.Apartments;
 using Bookify.Domain.Users;
 using Bookify.Domain.Users.Events;
 
-namespace Bookify.Domain.User;
+namespace Bookify.Domain.Users;
 
 public class User : Entity
 {
