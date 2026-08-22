@@ -1,3 +1,6 @@
+using Bookify.Application;
+using Bookify.Infrastructure;
+
 namespace Bookify.Api;
 
 public class Program
@@ -8,6 +11,9 @@ public class Program
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
+
+        builder.Services.AddApplication(); // Bookify.Application
+        builder.Services.AddInfrastructure(builder.Configuration); // Bookify.Infrastructure
 
         var app = builder.Build();
 
