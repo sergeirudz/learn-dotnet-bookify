@@ -7,14 +7,17 @@ namespace Bookify.Domain.Users;
 
 public class User : Entity
 {
-    /*
-     * Hide constructor to private. Allows to add side-effects when Creating user
-     */
-    private User(Guid id, FirstName firstName, LastName lastName, Email email) : base(id)
+    
+    private User(Guid id, FirstName firstName, LastName lastName, Email email)
+        : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+    }
+
+    private User()
+    {
     }
 
     public FirstName FirstName { get; set; }

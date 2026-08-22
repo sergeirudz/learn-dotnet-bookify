@@ -1,3 +1,4 @@
+using Bookify.Api.Extensions;
 using Bookify.Application;
 using Bookify.Infrastructure;
 
@@ -19,8 +20,23 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            // app.UseSwagger();
+            // app.UseSwaggerUI(options =>
+            // {
+            //     foreach (ApiVersionDescription description in app.DescribeApiVersions())
+            //     {
+            //         string url = $"/swagger/{description.GroupName}/swagger.json";
+            //         string name = description.GroupName.ToUpperInvariant();
+            //         options.SwaggerEndpoint(url, name);
+            //     }
+            // });
+
+            app.ApplyMigrations();
+
+            // REMARK: Uncomment if you want to seed initial data.
+            // app.SeedData();
         }
+
 
         app.UseHttpsRedirection();
 

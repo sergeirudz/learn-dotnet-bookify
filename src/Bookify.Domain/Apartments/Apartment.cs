@@ -9,8 +9,31 @@ namespace Bookify.Domain.Apartments;
  */
 public sealed class Apartment : Entity
 {
+    public Apartment(
+        Guid id,
+        Name name,
+        Description description,
+        Address address,
+        Money price,
+        Money cleaningFee,
+        List<Amenity> amenities)
+        : base(id)
+    {
+        Name = name;
+        Description = description;
+        Address = address;
+        Price = price;
+        CleaningFee = cleaningFee;
+        Amenities = amenities;
+    }
 
-    public Apartment(Guid id, Name name, Description description, Address address, Money price, Money cleaningFee, DateTime? lastBookedOnUtc) : base(id)
+    // Private parameterless constructor for EF Core design-time tools (migrations)
+    private Apartment()
+    {
+    }
+
+    public Apartment(Guid id, Name name, Description description, Address address, Money price, Money cleaningFee,
+        DateTime? lastBookedOnUtc) : base(id)
     {
         Name = name;
         Description = description;
