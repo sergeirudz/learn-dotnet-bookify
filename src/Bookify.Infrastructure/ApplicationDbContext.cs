@@ -1,3 +1,4 @@
+using Bookify.Application.Exceptions;
 using Bookify.Domain.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
     // MediatR publisher for Domain Events
     private readonly IPublisher _publisher;
+
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
     }
@@ -31,12 +33,21 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
      */
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var result = await base.SaveChangesAsync(cancellationToken);
-        
-        // Publish events after persisting because Published Event is a FACT that something happened
-        await PublishDomainEventsAsync();
+        try
+        {
+            var result = await base.SaveChangesAsync(cancellationToken);
 
-        return result;
+            // Publish events after persisting because Published Event is a FACT that something happened
+            await PublishDomainEventsAsync();
+
+            return result;
+        }
+        // Use custom exception so EF details into Application Layer
+        catch (DbUpdateConcurrencyException ex)
+        {
+            // Concurrency occurred in the DB. Pass raw ex data for logging and inspection
+            throw new ConcurrencyException("Concurrency exception occurred", ex);
+        }
     }
 
     private async Task PublishDomainEventsAsync()

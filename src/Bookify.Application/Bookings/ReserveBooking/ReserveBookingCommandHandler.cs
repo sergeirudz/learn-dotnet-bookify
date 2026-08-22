@@ -83,8 +83,10 @@ internal sealed class ReserveBookingCommandHandler : ICommandHandler<ReserveBook
 
             return booking.Id;
         }
+        // Catch concurrency
         catch (ConcurrencyException)
         {
+            // We have an overlap at DB level
             return Result.Failure<Guid>(BookingErrors.Overlap);
         }
     }

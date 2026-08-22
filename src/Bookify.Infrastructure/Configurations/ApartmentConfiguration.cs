@@ -35,6 +35,8 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
                 .HasConversion(currency => currency.Code, code => Currency.FromCode(code));
         });
 
+        // Shadow Property on Apartment Entity. unsigned int
+        // IsRowVersion - This column should be a RowVersion for Optimistic Concurrency
         builder.Property<uint>("Version").IsRowVersion();
     }
 }
