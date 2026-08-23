@@ -37,10 +37,17 @@ public class Program
             // app.SeedData();
         }
 
-
         app.UseHttpsRedirection();
 
-        // app.UseAuthorization();
+        app.UseRequestContextLogging();
+
+        // app.UseSerilogRequestLogging();
+
+        app.UseCustomExceptionHandler();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
 
         app.MapControllers();
 

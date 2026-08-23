@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path="bookify-real-export.json" />
     <File Path="compose-override.yaml" />
     <File Path="compose.yaml" />
   </Folder>

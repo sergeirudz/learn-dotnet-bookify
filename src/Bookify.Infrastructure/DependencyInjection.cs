@@ -10,6 +10,7 @@ using Bookify.Infrastructure.Data;
 using Bookify.Infrastructure.Email;
 using Bookify.Infrastructure.Repositories;
 using Dapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,18 @@ public static class DependencyInjection
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddTransient<IEmailService, EmailService>();
 
+        AddPersistence(services, configuration);
+
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
+
+        return services;
+    }
+
+
+    private static void AddPersistence(IServiceCollection services, IConfiguration configuration)
+    {
         // Database
         string connectionString = configuration.GetConnectionString("Database") ??
                                   throw new ArgumentNullException(nameof(configuration));
@@ -51,8 +64,5 @@ public static class DependencyInjection
             new SqlConnectionFactory(connectionString));
         // Handle DateTime compatibility for Dapper so DB. So DateOnly type works correctly
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
-
-
-        return services;
     }
 }

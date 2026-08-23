@@ -1,4 +1,6 @@
 ﻿// using Bookify.Api.Middleware;
+
+using Bookify.Api.Middleware;
 using Bookify.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,15 +17,15 @@ internal static class ApplicationBuilderExtensions
         dbContext.Database.Migrate();
     }
 
-    // public static void UseCustomExceptionHandler(this IApplicationBuilder app)
-    // {
-    //     app.UseMiddleware<ExceptionHandlingMiddleware>();
-    // }
-    //
-    // public static IApplicationBuilder UseRequestContextLogging(this IApplicationBuilder app)
-    // {
-    //     app.UseMiddleware<RequestContextLoggingMiddleware>();
-    //
-    //     return app;
-    // }
+    public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+    }
+    
+    public static IApplicationBuilder UseRequestContextLogging(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<RequestContextLoggingMiddleware>();
+    
+        return app;
+    }
 }
