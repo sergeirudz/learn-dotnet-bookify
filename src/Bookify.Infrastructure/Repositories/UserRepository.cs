@@ -9,13 +9,17 @@ internal sealed class UserRepository : Repository<User>, IUserRepository
     {
     }
 
-    // public override void Add(User user)
-    // {
-    //     foreach (Role role in user.Roles)
-    //     {
-    //         DbContext.Attach(role);
-    //     }
-    //
-    //     DbContext.Add(user);
-    // }
+    public override void Add(User user)
+    {
+        foreach (Role role in user.Roles)
+        {
+            DbContext.Attach(role);
+        }
+        /*
+         * Tell EF that roles on the User exist in the DB
+         * Don't insert the m again 
+         */
+    
+        DbContext.Add(user);
+    }
 }

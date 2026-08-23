@@ -7,6 +7,8 @@ namespace Bookify.Domain.Users;
 
 public class User : Entity
 {
+    private readonly List<Role> _roles = new();
+
     private User(Guid id, FirstName firstName, LastName lastName, Email email)
         : base(id)
     {
@@ -23,6 +25,7 @@ public class User : Entity
     public LastName LastName { get; set; }
     public Email Email { get; set; }
     public string IdentityId { get; private set; } = string.Empty;
+    public IReadOnlyCollection<Role> Roles => _roles.ToList();
 
     // Factory method that will allow later to have side-effects that dont belong in constructor
     public static User Create(FirstName firstName, LastName lastName, Email email)
@@ -30,6 +33,8 @@ public class User : Entity
         var user = new User(Guid.NewGuid(), firstName, lastName, email);
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
+
+        user._roles.Add(Role.Registered);
 
         return user;
     }
