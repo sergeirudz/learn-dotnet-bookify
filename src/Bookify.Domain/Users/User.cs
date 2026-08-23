@@ -7,7 +7,6 @@ namespace Bookify.Domain.Users;
 
 public class User : Entity
 {
-    
     private User(Guid id, FirstName firstName, LastName lastName, Email email)
         : base(id)
     {
@@ -23,6 +22,7 @@ public class User : Entity
     public FirstName FirstName { get; set; }
     public LastName LastName { get; set; }
     public Email Email { get; set; }
+    public string IdentityId { get; private set; } = string.Empty;
 
     // Factory method that will allow later to have side-effects that dont belong in constructor
     public static User Create(FirstName firstName, LastName lastName, Email email)
@@ -32,5 +32,10 @@ public class User : Entity
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
 
         return user;
+    }
+
+    public void SetIdentityId(string identityId)
+    {
+        IdentityId = identityId;
     }
 }
