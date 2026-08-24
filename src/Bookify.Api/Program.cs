@@ -1,3 +1,4 @@
+using Asp.Versioning.ApiExplorer;
 using Bookify.Api.Extensions;
 using Bookify.Application;
 using Bookify.Infrastructure;
@@ -17,7 +18,8 @@ public class Program
             loggerConfig.ReadFrom.Configuration(context.Configuration));
 
         builder.Services.AddControllers();
-        builder.Services.AddOpenApi();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
         builder.Services.AddApplication(); // Bookify.Application
         builder.Services.AddInfrastructure(builder.Configuration); // Bookify.Infrastructure
@@ -26,16 +28,16 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            // app.UseSwagger();
-            // app.UseSwaggerUI(options =>
-            // {
-            //     foreach (ApiVersionDescription description in app.DescribeApiVersions())
-            //     {
-            //         string url = $"/swagger/{description.GroupName}/swagger.json";
-            //         string name = description.GroupName.ToUpperInvariant();
-            //         options.SwaggerEndpoint(url, name);
-            //     }
-            // });
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                foreach (ApiVersionDescription description in app.DescribeApiVersions())
+                {
+                    string url = $"/swagger/{description.GroupName}/swagger.json";
+                    string name = description.GroupName.ToUpperInvariant();
+                    options.SwaggerEndpoint(url, name);
+                }
+            });
 
             app.ApplyMigrations();
 

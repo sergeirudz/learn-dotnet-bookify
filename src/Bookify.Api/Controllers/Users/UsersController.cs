@@ -1,4 +1,6 @@
 ﻿// using Asp.Versioning;
+
+using Asp.Versioning;
 using Bookify.Application.Users.GetLoggedInUser;
 using Bookify.Application.Users.LogInUser;
 using Bookify.Application.Users.RegisterUser;
@@ -12,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookify.Api.Controllers.Users;
 
 [ApiController]
-// [ApiVersion(ApiVersions.V1)]
+[ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/users")]
 public class UsersController : ControllerBase
 {
