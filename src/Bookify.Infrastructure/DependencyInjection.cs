@@ -56,6 +56,8 @@ public static class DependencyInjection
         services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
     }
 
+
+
     private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
     {
         services
