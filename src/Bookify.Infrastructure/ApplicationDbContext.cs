@@ -1,18 +1,31 @@
+using Bookify.Application.Abstractions.Clock;
 using Bookify.Application.Exceptions;
 using Bookify.Domain.Abstractions;
+using Bookify.Infrastructure.Outbox;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Bookify.Infrastructure;
 
 public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 {
-    // MediatR publisher for Domain Events
-    private readonly IPublisher _publisher;
-
-    public ApplicationDbContext(DbContextOptions options) : base(options)
+    private static readonly JsonSerializerSettings JsonSerializerSettings = new()
     {
+        TypeNameHandling = TypeNameHandling.All
+    };
+
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+
+    public ApplicationDbContext(
+        DbContextOptions options,
+        IDateTimeProvider dateTimeProvider)
+        : base(options)
+    {
+        _dateTimeProvider = dateTimeProvider;
     }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,10 +48,12 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     {
         try
         {
-            var result = await base.SaveChangesAsync(cancellationToken);
+            // Add events to the change tracker
+            AddDomainEventsAsOutboxMessages();
 
-            // Publish events after persisting because Published Event is a FACT that something happened
-            await PublishDomainEventsAsync();
+            var result = await base.SaveChangesAsync(cancellationToken);
+            // If publish events 
+            // then after persisting because Published Event is a FACT that something happened
 
             return result;
         }
@@ -50,10 +65,10 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
         }
     }
 
-    private async Task PublishDomainEventsAsync()
+    private void AddDomainEventsAsOutboxMessages()
     {
         // EFCore ChangeTracker grabs Entity entries that implement Entity class 
-        var domainEvents = ChangeTracker
+        var outboxMessages = ChangeTracker
             .Entries<Entity>()
             .Select(entry => entry.Entity)
             // Map domain events from each Entity 
@@ -69,12 +84,13 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
                 // Return Domain events 
                 return domainEvents;
             })
+            .Select(domainEvent => new OutboxMessage(
+                Guid.NewGuid(),
+                _dateTimeProvider.UtcNow,
+                domainEvent.GetType().Name,
+                JsonConvert.SerializeObject(domainEvent, JsonSerializerSettings)))
             .ToList();
 
-        foreach (var domainEvent in domainEvents)
-        {
-            // Publish events that will trigger Domain Event handlers
-            await _publisher.Publish(domainEvent);
-        }
+        AddRange(outboxMessages);
     }
 }
